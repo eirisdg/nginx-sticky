@@ -91,7 +91,7 @@ RUN ./configure --with-cc-opt='-g -O2 -fstack-protector-strong --param=ssp-buffe
 RUN make && make install
 
 # Limpiamos la imagen eliminando paquetería innecesaria y temporales
-RUN apt-get remove --purge --auto-remove -y
+RUN apt-get remove --purge --auto-remove -y \
     libpcre3-dev \
     build-essential \
     libssl-dev \
