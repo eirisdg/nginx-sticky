@@ -111,7 +111,7 @@ RUN mkdir -p /var/cache/nginx/client_temp && \
     mkdir -p /etc/nginx/conf.d
 
 # Añadimos configuracion por defecto
-ADD files/nginx.conf $NGINX_DIR/nginx.conf
+ADD files/nginx.conf /etc/nginx/nginx.conf
 
 # Añadimos el binario de NGinx al PATH
 ENV PATH=/usr/sbin/nginx:$PATH
