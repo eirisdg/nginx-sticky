@@ -6,6 +6,8 @@ ENV NGINX_STICKY_MODULE_VERSION 1.2.6-fix
 ENV ZLIB_VERSION 1.2.11
 ENV PCRE_VERSION 8.44
 
+RUN addgroup --system --gid 101 nginx && \
+    adduser --system --disabled-login --ingroup nginx --no-create-home --home /nonexistent --gecos "nginx user" --shell /bin/false --uid 101 nginx
 
 RUN apt-get update && \
     apt-get install -y \
@@ -28,9 +30,6 @@ RUN wget "http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" && tar xzf ng
 RUN wget "http://zlib.net/zlib-${ZLIB_VERSION}.tar.gz" && tar xzf zlib-${ZLIB_VERSION}.tar.gz && rm -f zlib-${ZLIB_VERSION}.tar.gz
 RUN wget "https://ftp.pcre.org/pub/pcre/pcre-${PCRE_VERSION}.tar.gz" && tar xzf pcre-${PCRE_VERSION}.tar.gz && rm -f pcre-${PCRE_VERSION}.tar.gz
 RUN wget "https://github.com/eirisdg/nginx-sticky-module-ng/archive/${NGINX_STICKY_MODULE_VERSION}.zip" && unzip ${NGINX_STICKY_MODULE_VERSION}.zip && rm -f ${NGINX_STICKY_MODULE_VERSION}.zip
-
-RUN addgroup --system --gid 101 nginx && \
-    adduser --system --disabled-login --ingroup nginx --no-create-home --home /nonexistent --gecos "nginx user" --shell /bin/false --uid 101 nginx
 
 WORKDIR /nginx-src/nginx-${NGINX_VERSION}
 RUN ./configure --with-cc-opt='-g -O2 -fstack-protector-strong --param=ssp-buffer-size=4 -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2 -fPIC' \
