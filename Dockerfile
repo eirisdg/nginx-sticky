@@ -107,7 +107,11 @@ RUN mkdir -p /var/cache/nginx/client_temp && \
     mkdir -p /var/cache/nginx/proxy_temp && \
     mkdir -p /var/cache/nginx/scgi_temp && \
     mkdir -p /var/cache/nginx/uwsgi_temp && \
-    chown -R nginx. /var/cache/nginx/
+    chown -R nginx. /var/cache/nginx/ && \
+    mkdir -p /etc/nginx/conf.d
+
+# Añadimos configuracion por defecto
+ADD files/nginx.conf $NGINX_DIR/nginx.conf
 
 # Añadimos el binario de NGinx al PATH
 ENV PATH=/usr/sbin/nginx:$PATH
