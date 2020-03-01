@@ -1,0 +1,39 @@
+# Usamos la última imagen de NGINX
+FROM nginx:latest
+MAINTAINER Adrián Domínguez <adrian.dominguez@seidor.es>
+
+ENV NGINX_CONF_DIR /etc/nginx/conf.d
+ENV NGINX_STICKY_MODULE_VERSION 1.2.6
+
+CMD apt update && \
+    apt install -y \
+    gcc \
+    libssl-dev \
+    make \
+    libpcre3-dev \
+    zlib1g-dev \
+    libxml2-dev \
+    libxslt-dev \
+    libgd-dev \
+    libgeoip-dev \
+    libperl-dev \
+    unzip \
+    git \
+    wget && \
+    rm -rf /var/lib/apt/lists/* && \
+    wget -O /tmp/nginx.tar.gz "http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" && \
+    wget -O /tmp/sticky.zip https://github.com/Refinitiv/nginx-sticky-module-ng/archive/$NGINX_STICKY_MODULE_VERSION.zip && \
+    unzip /tmp/sticky.zip -d /tmp && \
+    tar -zxC /usr/src -f /tmp/nginx.tar.gz && \
+    cd /usr/src/nginx-$NGINX_VERSION && \
+    CONFARGS=$(nginx -V 2>&1 | sed -n -e 's/^.*arguments: //p') && \
+    ./configure --with-compat $CONFARGS --add-module=/tmp/nginx-sticky-module-ng-$NGINX_STICKY_MODULE_VERSION &&\
+    make && \
+    make install
+
+# Añadimos a la ruta de configuración por defecto el fichero de configuración de NGINX
+ADD files/jboss-proxy.conf $NGINX_CONF_DIR/default.conf
+
+
+
+configure arguments: --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx --with-compat --with-file-aio --with-threads --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-mail --with-mail_ssl_module --with-stream --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module --with-cc-opt='-g -O2 -fdebug-prefix-map=/data/builder/debuild/nginx-1.17.8/debian/debuild-base/nginx-1.17.8=. -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie'
