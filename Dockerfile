@@ -92,13 +92,7 @@ RUN make && make install
 
 # Limpiamos la imagen eliminando paquetería innecesaria y temporales
 RUN apt-get remove --purge --auto-remove -y \
-    libpcre3-dev \
     build-essential \
-    libssl-dev \
-    libperl-dev \
-    libxslt1-dev \
-    libgd-dev \
-    libgeoip-dev \
     wget \
     gnupg1 \
     ca-certificates \
@@ -106,7 +100,6 @@ RUN apt-get remove --purge --auto-remove -y \
     && rm -rf /var/lib/apt/lists/* && \
     apt-get purge -y --auto-remove && \
     rm -rf /nginx-src
-
 
 # Creamos las rutas temporales y damos permisos
 RUN mkdir -p /var/cache/nginx/client_temp && \
@@ -125,7 +118,6 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 
 # Publicamos puertos
 EXPOSE 80 443
-
 
 STOPSIGNAL SIGTERM
 CMD ["nginx", "-g", "daemon off;"]
