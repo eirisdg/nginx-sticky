@@ -20,18 +20,15 @@ CMD apt update && \
     libxslt-dev \
     gd-dev \
     geoip-dev \
-    unzip \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN wget -O /tmp/nginx.tar.gz "http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz"
-
-RUN wget -O /tmp/sticky.zip https://github.com/Refinitiv/nginx-sticky-module-ng/archive/$NGINX_STICKY_MODULE_VERSION.zip && \
-    unzip /tmp/sticky.zip -d /tmp
-
-RUN CONFARGS=$(nginx -V 2>&1 | sed -n -e 's/^.*arguments: //p') \
+    unzip && \
+    rm -rf /var/lib/apt/lists/* && \
+    wget -O /tmp/nginx.tar.gz "http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" && \
+    wget -O /tmp/sticky.zip https://github.com/Refinitiv/nginx-sticky-module-ng/archive/$NGINX_STICKY_MODULE_VERSION.zip && \
+    unzip /tmp/sticky.zip -d /tmp && \
+    CONFARGS=$(nginx -V 2>&1 | sed -n -e 's/^.*arguments: //p') && \
     tar -zxC /usr/src -f /tmp/nginx.tar.gz && \
     cd /usr/src/nginx-$NGINX_VERSION && \
-    ./configure --with-compat $CONFARGS --add-module=/tmp/nginx-sticky-module-ng-$NGINX_STICKY_MODULE_VERSION \
+    ./configure --with-compat $CONFARGS --add-module=/tmp/nginx-sticky-module-ng-$NGINX_STICKY_MODULE_VERSION && \
     make && \
     make install
 
