@@ -85,7 +85,6 @@ RUN make && make install
 
 # Extra settings to make nginx happier to work with
 WORKDIR /etc/nginx
-RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
 RUN mkdir -p /var/cache/nginx/client_temp && mkdir -p /var/cache/nginx/fastcgi_temp && mkdir -p /var/cache/nginx/proxy_temp && mkdir -p /var/cache/nginx/scgi_temp && mkdir -p /var/cache/nginx/uwsgi_temp
 ENV PATH=/usr/sbin/nginx:$PATH
 
